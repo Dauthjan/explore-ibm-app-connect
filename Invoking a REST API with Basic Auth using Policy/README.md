@@ -21,7 +21,7 @@ Comment the code in ESQL that injects the username and password
 <img src="https://imgpile.com/images/byOSGX.png" alt="Untitled" border="0"></br>
 
 ### Step 4:
-Create a policy for the consumer. Note the Identified to propagate is now set to STATIC ID, Propagation is set to true and Transport propagation configuration is the Security Identifier (last time we saved the credentials in server.conf.yaml, this time we replaced it using mqsisetdbparms). We cannot use credentials stored in server.conf.yaml as it will throw an expection: BIP2769E which says The transportPropagationConfig property of the security profile must be set to the name of of a security identity that has been defined using the mqsisetdbparms or mqsicredentials command. 
+Create a policy for the consumer. Note the Identified to propagate is now set to STATIC ID, Propagation is set to true and Transport propagation configuration is the Security Identifier (last time we saved the credentials in server.conf.yaml, this time we replaced it using mqsisetdbparms). We cannot use credentials stored in server.conf.yaml as it will throw an expection: BIP2769E which says The transportPropagationConfig property of the security profile must be set to the name of of a security identity that has been defined using the mqsisetdbparms or mqsicredentials command. </br>
 <img src="https://imgpile.com/images/bykbmo.png" alt="Untitled" border="0"></br>
 
 ### Step 5:
