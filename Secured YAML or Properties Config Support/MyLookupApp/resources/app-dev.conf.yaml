@@ -1,0 +1,15 @@
+backends:
+  - postman
+  - httpbin
+
+postman:
+  enabled: true
+  url: https://postman-echo.com/basic-auth
+  username: "postman"
+  password: "![FZ87o1JZchI2kjQ/lzX2hg==]"
+
+httpbin:
+  enabled: true
+  url: http://httpbin.org/basic-auth/foo/bar
+  username: "foo"
+  password: "![/0MDHhBLjVuDL6bqBONoyg==]"

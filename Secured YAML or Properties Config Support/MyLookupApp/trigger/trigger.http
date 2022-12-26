@@ -1,0 +1,9 @@
+###==---------------------------------------------------------==###
+#               Understand dynamic behaviour of Flow              #
+###==---------------------------------------------------------==###
+POST http://localhost:7800/mylookupflow
+
+###==---------------------------------------------------------==###
+#        Retrieve a key/value from Config - can be encrypted      #
+###==---------------------------------------------------------==###
+GET http://localhost:7800/mylookupflow?key=httpbin.password

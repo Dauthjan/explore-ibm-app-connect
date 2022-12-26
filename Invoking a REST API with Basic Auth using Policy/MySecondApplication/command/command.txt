@@ -1,0 +1,1 @@
+mqsisetdbparms [<integrationNodeName> | --work-dir <workDir>] -n MyAppBasicAuth -u myusername -p mypassword

@@ -1,0 +1,81 @@
+BROKER SCHEMA com.dev.test
+
+
+CREATE COMPUTE MODULE MyMessageFlow_TransformLogic
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+        -- Creating JSON Object + Array
+        SET OutputRoot.JSON.Data = InputRoot.XMLNSC;
+        CALL checkForJSONArrays(OutputRoot.JSON.Data);
+
+		RETURN TRUE;
+	END;
+END MODULE;
+
+/*-====================================================================================================\
+| Func/Proc Name : checkForJSONArrays                                                                  |
+| @Param Name    : root - REFERENCE TO OutputRoot                                                      |
+| @Description   : Checks for repeating objects in JSON to create Array                                |
+*-=====================================================================================================*/
+CREATE PROCEDURE checkForJSONArrays(IN root REFERENCE)
+BEGIN
+	-- track the start and end of 'arrays' ( sequences of same-named siblings )
+	DECLARE firstArrayElementRef REFERENCE TO root;
+	DECLARE siblingRef           REFERENCE TO root;
+	DECLARE arraySize            INTEGER      0;
+	
+	WHILE LASTMOVE(siblingRef) DO
+		-- Process any child elements first
+		DECLARE firstChildRef REFERENCE TO siblingRef;
+		MOVE    firstChildRef FIRSTCHILD;
+		IF LASTMOVE(firstChildRef) THEN
+			CALL checkForJSONArrays(firstChildRef);
+		END IF;
+		-- IF this sibling's name is different from the previous one.
+		IF FIELDNAME(siblingRef) = FIELDNAME(firstArrayElementRef) THEN
+			SET arraySize = arraySize + 1;
+		ELSE
+			-- IF there was a sequence of two or more siblings with the same name
+			IF arraySize > 1 THEN
+				CALL createJSONArray(firstArrayElementRef, arraySize);
+			END IF;
+			-- start scanning for a new array
+			MOVE firstArrayElementRef TO siblingRef;
+			SET arraySize = 1;
+		END IF;
+		MOVE siblingRef NEXTSIBLING;
+	END WHILE;
+
+	IF arraySize > 1 THEN
+		CALL createJSONArray(firstArrayElementRef, arraySize);
+	END IF;
+END;
+
+/*-====================================================================================================\
+| Func/Proc Name : createJSONArray                                                                     |
+| @Param Name    : firstArrayElementRef - REFERENCE TO object Name to be used as Array Element         |
+|                  arraySize - INTEGER Size of the array                                               |
+| @Description   : Creates create Array for a particular JSON Object                                   |
+*-=====================================================================================================*/
+CREATE PROCEDURE createJSONArray(IN firstArrayElementRef REFERENCE, IN arraySize INTEGER)
+BEGIN
+	-- Create a parent element for the array
+	DECLARE arrayParentRef REFERENCE TO firstArrayElementRef;
+	CREATE PREVIOUSSIBLING OF firstArrayElementRef AS arrayParentRef TYPE      JSON.Array 
+	                                                                 NAMESPACE FIELDNAMESPACE(firstArrayElementRef)
+	                                                                 NAME      FIELDNAME(firstArrayElementRef);
+	-- Make the array members children of the new parent element
+	DECLARE pos INTEGER 1;
+	WHILE pos <= arraySize DO
+		DECLARE tempRef REFERENCE TO firstArrayElementRef;
+		-- advance the reference. This should never fail because we have
+		-- already walked all of these siblings to discover the array.
+		MOVE firstArrayElementRef NEXTSIBLING;
+
+		DETACH tempRef;
+		ATTACH tempRef TO arrayParentRef AS LASTCHILD;
+
+		SET pos = pos + 1;
+	END WHILE;
+END;

@@ -1,0 +1,50 @@
+BROKER SCHEMA com.dev.test2
+
+
+CREATE COMPUTE MODULE CreatePayload
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- Adding Auth Headers
+		-- DECLARE username CHARACTER 'myusername';
+		-- DECLARE password CHARACTER 'mypassword';
+		-- CREATE NEXTSIBLING OF OutputRoot.Properties DOMAIN 'HTTPRequestHeader';
+		-- SET OutputRoot.HTTPRequestHeader.Authorization = 'Basic ' || BASE64ENCODE(username || ':' || password);
+		
+		-- Creating XML Payload
+		CALL createXMLPayload();
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE createXMLPayload()
+	BEGIN
+		SET OutputRoot.BLOB.BLOB = CAST(
+		'<employees>
+		  <employee>
+		    <name>Upendra Roul</name>
+		    <position>Software Developer</position>
+		    <joinyear>2010</joinyear>
+		    <salary>6000</salary>
+		  </employee>
+		  <employee>
+		    <name>Jay Prakash</name>
+		    <position>Testers</position>
+		    <joinyear>2010</joinyear>
+		    <salary>7000</salary>
+		  </employee>
+		  <employee>
+		    <name>Rekha Sharma</name>
+		    <position>HR</position>
+		    <joinyear>2005</joinyear>
+		    <salary>7000</salary>
+		  </employee>
+		  <employee>
+		    <name>Rohit S</name>
+		    <position>House Keeping</position>
+		    <joinyear>2000</joinyear>
+		    <salary>3000</salary>
+		  </employee>
+		</employees>' AS BLOB CCSID InputProperties.CodedCharSetId);
+	END;
+
+END MODULE;

@@ -1,0 +1,47 @@
+integerType: 23
+hexaType: 0x12d4
+floatType: 180.0
+exponentialType: 12.3015e+05
+booleanType1: true
+booleanType2: no
+nullType1: null
+nullType2: ~
+multiLine1: |
+     this is a multi-line string it
+     spans more than one
+     line
+multiLine2: >
+     this is a multi-line string it
+     spans more than one
+     line
+listType1:
+  - One
+  - two
+  - Three
+listType2: [one, two , three]
+dictionaryType:
+  hostname:
+    dev: dev.host
+    int: int.host
+    qa: qa.host
+    prod: prod.host
+  port: 3012
+  username: root
+  password: root
+complexType1:
+  - values:
+      value1: value1
+      value 2: value2
+      value 3: value3
+  - other values:
+      key: value
+complexType2:
+  values:
+    -
+      value1: value1
+      value2: value2
+      value3: value3
+    -
+      value1: value1
+      value2: value2
+      value3: value3

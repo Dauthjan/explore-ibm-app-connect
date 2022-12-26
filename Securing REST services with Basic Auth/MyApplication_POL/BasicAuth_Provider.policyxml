@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies>
+  <policy policyType="SecurityProfiles" policyName="BasicAuth_Provider" policyTemplate="SecurityProfiles">
+    <authentication>Local</authentication>
+    <authenticationConfig>MyAppBasicAuth</authenticationConfig>
+    <mapping>NONE</mapping>
+    <mappingConfig></mappingConfig>
+    <authorization>NONE</authorization>
+    <authorizationConfig></authorizationConfig>
+    <propagation>false</propagation>
+    <idToPropagateToTransport>MESSAGE ID</idToPropagateToTransport>
+    <transportPropagationConfig></transportPropagationConfig>
+    <keyStore>Reserved for future use</keyStore>
+    <trustStore>Reserved for future use</trustStore>
+    <passwordValue>PLAIN</passwordValue>
+    <rejectBlankpassword>true</rejectBlankpassword>
+    <alternateServers></alternateServers>
+  </policy>
+</policies>

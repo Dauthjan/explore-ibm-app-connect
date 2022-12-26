@@ -1,0 +1,27 @@
+BROKER SCHEMA com.app.config
+
+
+--CREATE PROCEDURE readYAML(IN yamlPath CHARACTER)
+--RETURNS CHARACTER
+--LANGUAGE JAVA
+--EXTERNAL NAME "com.app.config.Configuration.readYAML";
+--
+--CREATE PROCEDURE readProperties(IN propsPath CHARACTER)
+--RETURNS CHARACTER
+--LANGUAGE JAVA
+--EXTERNAL NAME "com.app.config.Configuration.readProperties";
+
+CREATE PROCEDURE getProperty(IN key CHARACTER)
+RETURNS CHARACTER
+LANGUAGE JAVA
+EXTERNAL NAME "com.app.config.Configuration.getProperty";
+
+CREATE PROCEDURE setProperty(IN key CHARACTER, IN value CHARACTER)
+RETURNS CHARACTER
+LANGUAGE JAVA
+EXTERNAL NAME "com.app.config.Configuration.setProperty";
+
+CREATE PROCEDURE removeProperty(IN key CHARACTER)
+RETURNS CHARACTER
+LANGUAGE JAVA
+EXTERNAL NAME "com.app.config.Configuration.removeProperty";

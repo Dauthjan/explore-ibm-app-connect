@@ -1,0 +1,65 @@
+BROKER SCHEMA com.dev.test
+
+-- Imports
+PATH com.app.config;
+
+CREATE COMPUTE MODULE MyFlow
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		-- Setting the Content-Type of Output 
+		SET OutputRoot.Properties.ContentType = 'text/plain';
+		
+		-- Based on HTTP Method, decide the functionality
+		CASE InputLocalEnvironment.HTTP.Input.RequestLine.Method
+		WHEN 'GET' THEN -- Retrieve Key-Value Pairs
+			DECLARE rQueryParams REFERENCE TO InputLocalEnvironment.HTTP.Input.QueryString;
+			SET OutputRoot.BLOB.BLOB = CAST(getProperty(rQueryParams.key) AS BLOB CCSID 1208);
+		WHEN 'POST' THEN -- Invoke Backends based on "enabled" flag
+			DECLARE rwBackends ROW;
+			DECLARE iCounter   INT 0;
+			CALL splitString(TRANSLATE(getProperty('backends'), '[]', ''), ',', rwBackends, TRUE);
+			FOR eachBackend AS rwBackends.Item[] DO
+				IF CAST(getProperty(eachBackend || '.enabled') AS BOOLEAN) THEN
+					DECLARE cBackendURL  CHAR getProperty(eachBackend || '.url');
+					DECLARE cBackendUser CHAR getProperty(eachBackend || '.username');
+					DECLARE cBackendPass CHAR getProperty(eachBackend || '.password');
+					SET OutputLocalEnvironment.Destination.HTTP.RequestURL = cBackendURL;
+					CREATE NEXTSIBLING OF OutputRoot.Properties DOMAIN 'HTTPRequestHeader';
+					SET OutputRoot.HTTPRequestHeader.Authorization = 'Basic ' || BASE64ENCODE(cBackendUser || ':' || cBackendPass);
+					SET iCounter = iCounter + 1;
+					PROPAGATE TO TERMINAL 'out1';
+				END IF;
+			END FOR;
+			SET OutputRoot.BLOB.BLOB = CAST(CAST(iCounter AS CHAR) || ' backend(s) invoked' AS BLOB CCSID 1208);
+		ELSE -- Throw error for Not Implemented Methods
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 501;
+		END CASE;		
+		
+		RETURN TRUE;
+	END;
+END MODULE;
+
+/*-====================================================================================================\
+| Func/Proc Name	: splitString                                                                       |
+| @Param Name		: cStringToParse  - String which needs to be tokenized                              |
+|                   : del - Delimiter based on which it will be tokenized                               |
+|                   : refOut - ROW variable where the tokenized output will be stored                   |
+|                   : isTrimReqd - Tokenized results to be trimmed for spaces                           |
+| @Description      : Copies InputRoot to OutputRoot                                                    |
+*-=====================================================================================================*/
+CREATE PROCEDURE splitString(IN cStringToParse CHAR, IN del CHAR, IN refOut REFERENCE, IN isTrimReqd BOOLEAN)
+BEGIN
+	DECLARE i INT 1; 
+	WHILE LENGTH(cStringToParse) > 0 DO 
+		IF CONTAINS(cStringToParse, del) THEN
+			SET refOut.Item[i] = SUBSTRING(cStringToParse BEFORE del);
+			SET cStringToParse = SUBSTRING (cStringToParse AFTER del); 
+		ELSE 
+			SET refOut.Item[i] = cStringToParse; 
+			SET cStringToParse = ''; 
+		END IF; 
+		IF isTrimReqd THEN SET refOut.Item[i] = TRIM(refOut.Item[i]); END IF;
+		SET i = i + 1; 
+	END WHILE;
+END;
