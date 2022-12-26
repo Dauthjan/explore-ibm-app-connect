@@ -10,7 +10,9 @@ Features Implemented:
 
 ### Understanding the flow-chart for implementation (simple version - not showing decryption capabilities)
 <p align="center">
-  <img src="https://imgur.com/Fo6smUt" />
+  <a href="https://ibb.co/BySyHpc">
+    <img src="https://i.ibb.co/sKMKpfb/Untitled.png" alt="Flow Chart" border="0">
+  </a>
 </p>
 
 ### How to use stored Key-Value pairs
