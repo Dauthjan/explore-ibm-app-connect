@@ -1,0 +1,13 @@
+BROKER SCHEMA com.dev.test
+
+
+CREATE COMPUTE MODULE MyMessageFlow_Transformation
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		-- Concatinates firstName and lastName to produce fullName
+		SET OutputRoot.JSON.Data.fullName = InputRoot.JSON.Data.firstName || ' ' || InputRoot.JSON.Data.lastName;
+
+		RETURN TRUE;
+	END;
+END MODULE;

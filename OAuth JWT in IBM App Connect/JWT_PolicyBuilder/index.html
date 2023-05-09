@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta lang="en" charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <link rel="icon" type="image/x-icon" href="https://seeklogo.com/images/J/jwt-logo-65D86B4640-seeklogo.com.png">
+    <title>IBM ACE JWT Policy Builder</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+ @import url(https://fonts.googleapis.com/css?family=IBM+Plex+Sans); ::-webkit-scrollbar-track{ -webkit-box-shadow: inset 0 0 6px #161616; background-color: #F5F5F5;} ::-webkit-scrollbar{ width: 10px; background-color: #F5F5F5;} ::-webkit-scrollbar-thumb{ background-color: #161616;} *{ border: none; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; font-family: 'IBM Plex Sans', Consolas, "courier new", Helvetica, Arial, sans-serif; font-size: 1em; line-height: 1.6;} h1{ font-size: 2em; font-weight: 300; display: flex; align-self: center; align-items: center; justify-content: center; color: #777777;} html{ background: #161616; height: 100%; width: -webkit-fill-available; display: flex; flex-direction: column; justify-content: center; align-items: center;} #form-main{ height: 90vh; width: 90vw; display: flex; justify-content: center; flex-direction: row; background-color: #F4F4F4;} #form-div{ display: flex; flex-direction: column; padding-left: 35px; padding-right: 35px; padding-top: 1vh; padding-bottom: 50px; width: 50%; scroll-behavior: auto; overflow: auto;} .form{ display: flex; flex-direction: column;} #info-div{ width: 50%; padding: 20px; font-size: 1.1em; color: #3c3c3c; text-align: justify; text-justify: inter-word; overflow: auto;} label.field-desc{ color: #747373; font-size: 15px; display: inline-block; margin-bottom: 10px;} span.field-text{ color: #747373; font-size: 15px; display: inline-block; margin-bottom: 0;} input[type=text], input[type=number], select{ width: 100%; padding: 12px; margin: 8px 0; display: inline-block; color: #3c3c3c; line-height: 22px; background-color: #fbfbfb; box-sizing: border-box; border: none; border-bottom: 1px solid #cdcdcd; outline: none;} input:focus, select:focus{ background-color: #E5E5E5; box-shadow: 0; border: 2px solid #0F62FE; color: #161616; outline: none;} input:hover, input:focus{ background-color: #E5E5E5;} .button-blue{ display: flex; align-items: center; justify-content: center; border: none; outline: none; float: left; width: 100%; cursor: pointer; background-color: #0F62FE; color: white; font-size: 1.2em; padding: 12px 0 12px 0; -webkit-transition: all 0.3s; -moz-transition: all 0.3s; transition: all 0.3s; margin-top: -4px; font-weight: 700;} .button-blue:hover{ background-color: #0353E9; color: white;} .container{ display: block; position: relative; padding-left: 35px; margin-bottom: 12px; cursor: pointer; font-size: 15px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;} .container input{ position: absolute; opacity: 0; cursor: pointer;} .checkmark{ position: absolute; top: 0; left: 0; height: 20px; width: 20px; background-color: #e4e4e4; border-radius: 50%;} .tick{ border-radius: 0;} .container:hover input~.checkmark{ background-color: #afafaf;} .container input:checked~.checkmark{ background-color: #0F62FE;} .checkmark:after{ content: ""; position: absolute; display: none;} .container input:checked~.checkmark:after{ display: block;} .container .checkmark:after{ top: 6px; left: 6px; width: 8px; height: 8px; border-radius: 50%; background: white;} .container .tick:after{ left: 6px; top: 2px; width: 5px; height: 10px; border-radius: 0; background: #0F62FE; border: solid white; border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg);} .select{ display: flex; flex-direction: column; position: relative; cursor: pointer;} .option{ padding: 0 30px 0 10px; min-height: 46.5px; display: flex; align-items: center; background-color: #E5E5E5; position: absolute; top: 0; width: 100%; pointer-events: none; order: 2; z-index: 1; box-sizing: border-box; overflow: hidden; white-space: nowrap; cursor: pointer;} .option:hover{ background: #dcdcdc;} .select:focus .option{ position: relative; pointer-events: all;} input.selectopt{ opacity: 0; position: absolute; left: -99999px;} input.selectopt:checked+label.option{ order: 1; z-index: 2; background: white; border-top: none; position: relative;} input.selectopt:checked+label.option:after{ content: ''; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid black; position: absolute; right: 10px; top: calc(50% - 2.5px); pointer-events: none; z-index: 3;} input.selectopt:checked+label.option:before{ position: absolute; right: 0; height: 40px; width: 40px; content: '';} .field_groups{ margin-top: 10px; margin-bottom: 10px;} .accordion{ position: relative; opacity: 0; } .tab{ width: 100%; color: #161616; overflow: hidden;} .tab-label{ display: flex; justify-content: space-between; padding: 1em; background: #E5E5E5; cursor: pointer;} .tab-label:hover{ background: #E0E0E0;} .tab-label::after{ content: "❯"; width: 1em; height: 1em; margin-top: 13px;} .tab-content{ max-height: 0; padding: 0 1em; color: #161616; background: white;} .tab-close{ display: flex; justify-content: flex-end; padding: 1em; font-size: 0.75em; background: #161616; cursor: pointer;} .accordion:checked+.tab-label{ background: #161616; color: white;} .accordion:checked+.tab-label::after{ transform: rotate(90deg);} .accordion:checked~.tab-content{ max-height: 100vh; padding: 1em;} #http-allowed-methods{ display: flex; flex-wrap: wrap; padding-left: 0;} #http-allowed-methods li{ list-style: none; flex: 0 0 33.333333%;} #gradient{ height: 1px; width: 100%; margin-bottom: 10px; background: -moz-radial-gradient(center, ellipse cover, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 19%, rgba(3, 3, 3, 0) 80%, rgba(1, 1, 1, 0) 100%); background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(10, 10, 10, 1)), color-stop(19%, rgba(8, 8, 8, 1)), color-stop(80%, rgba(3, 3, 3, 0)), color-stop(100%, rgba(1, 1, 1, 0))); background: -webkit-radial-gradient(center, ellipse cover, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 19%, rgba(3, 3, 3, 0) 80%, rgba(1, 1, 1, 0) 100%); background: -o-radial-gradient(center, ellipse cover, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 19%, rgba(3, 3, 3, 0) 80%, rgba(1, 1, 1, 0) 100%); background: -ms-radial-gradient(center, ellipse cover, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 19%, rgba(3, 3, 3, 0) 80%, rgba(1, 1, 1, 0) 100%); background: radial-gradient(center, ellipse cover, rgba(10, 10, 10, 1) 0%, rgba(8, 8, 8, 1) 19%, rgba(3, 3, 3, 0) 80%, rgba(1, 1, 1, 0) 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a0a0a', endColorstr='#00010101', GradientType=1);} pre{ tab-size: 4; counter-reset: linecounter; line-height: 22px; background: #1E1E1E; color: #f1f1f1; padding: 10px 16px; border-radius: 2px; border-top: 4px solid #00aeef; -moz-box-shadow: inset 0 0 10px #000; box-shadow: inset 0 0 10px #000; overflow: auto;} pre span.line{ counter-increment: linecounter; line-height: 1.4em; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size: .9em;} pre span.line::before{ content: counter(linecounter); color: #888; width: 30px; display: inline-block; border-right: 1px solid #b4b4b4; padding: 0 .5em; margin-right: .5em; text-align: right; font-size: 11px; line-height: 16px;} pre span.line:nth-child(odd)::before{ background-color: #3F3F46;} #copy_to_clip{ position: absolute; top: 8px; right: 16px; background: transparent; opacity: 0.6; transition: all 1s ease-out; cursor: pointer;} #copy_to_clip .tooltiptext{ visibility: hidden; width: fit-content; padding: 2px; background-color: rgba(228, 228, 228, 0.405); color: #fff; text-align: center; border-radius: 6px; position: absolute; top: 5px; right: 105%; z-index: 1;} #copy_to_clip:hover{ opacity: 1} #copy_to_clip:hover .tooltiptext{ visibility: visible;}
+    </style>
+    <script>
+        $(function () {
+            fill();
+            $('#policy_form input').on('change', function () {
+                if ($('#custom_token_expression').is(':checked')) {
+                    $('#token-expression').css({ display: 'block' });
+                } else {
+                    $('#token-expression').css({ display: 'none' });
+                }
+                $('#JWT-Key-origin-value').text($('input[name=JWT-Key-origin]:checked').val());
+                if ($('input[name=JWT-Signing-Method]:checked').val() == 'HMAC') {
+                    $("#JWKS").prop('checked', false);
+                    $("#JWKS").prop('disabled', true);
+                    $("#CERT").prop('checked', false);
+                    $("#CERT").prop('disabled', true);
+                    $("#URL").prop('checked', false);
+                    $("#URL").prop('disabled', true);
+                    $("#JWKS_wrap").css('opacity', '.2');
+                    $("#CERT_wrap").css('opacity', '.2');
+                    $("#URL_wrap").css('opacity', '.2');
+                    $("#Key").attr('checked', true);
+                    $("#Text").attr('checked', true);
+                } else {
+                    $("#Key").attr('checked', false);
+                    $("#JWKS").attr('checked', true);
+                    $("#JWKS").attr('disabled', false);
+                    $("#CERT").attr('disabled', false);
+                    $("#URL").attr('checked', false);
+                    $("#URL").attr('disabled', true);
+                    $("#JWKS_wrap").css('opacity', '1');
+                    $("#CERT_wrap").css('opacity', '1');
+                    $("#URL_wrap").css('opacity', '1');
+                }
+                if ($('input[name=JWT-Signing-Method]:checked').val() == 'NONE') {
+                    $('#JWT-Key-origin').css({ display: 'none' })
+                } else {
+                    $('#JWT-Key-origin').css({ display: 'block' })
+                }
+                if ($('input[name=JWT-Key-origin]:checked').val() != 'JWKS') {
+                    $("#URL").prop('checked', false);
+                    $("#URL").prop('disabled', true);
+                    $("#URL_wrap").css('opacity', '.2');
+                } else {
+                    $("#URL").attr('checked', true);
+                    $("#URL").attr('disabled', false);
+                    $("#URL_wrap").css('opacity', '1');
+                }
+                if ($('input[name=JWT-Key-origin-Source]:checked').val() == 'URL') {
+                    $('#JWKS_URL_or_Key_logo').text('URL');
+                    $('#JWKS_URL_or_Key').attr("placeholder", "Include the URL which has the JSON Web Key Set");
+                } else if (($('input[name=JWT-Key-origin-Source]:checked')).val() == 'File') {
+                    $('#JWKS_URL_or_Key_logo').text('file://');
+                    $('#JWKS_URL_or_Key').attr("placeholder", "Include the absolute path of the file");
+                } else if ($('input[name=JWT-Key-origin-Source]:checked').val() == 'Text') {
+                    if ($('input[name=JWT-Key-origin]:checked').val() == 'JWKS') {
+                        $('#JWKS_URL_or_Key_logo').text('JSON');
+                        $('#JWKS_URL_or_Key').attr("placeholder", 'Include the minified JWKS {"keys": [{key}]} or JWK {key}');
+                    } else {
+                        $('#JWKS_URL_or_Key_logo').text('🔑');
+                    }
+                    if ($('input[name=JWT-Key-origin]:checked').val() == 'CERT') {
+                        $('#JWKS_URL_or_Key').attr("placeholder", "Include the Certificate without -----BEGIN CERTIFICATE----- and -----END CERTIFICATE-----");
+                    } else if ($('input[name=JWT-Key-origin]:checked').val() == 'KEY') {
+                        $('#JWKS_URL_or_Key').attr("placeholder", "Include the Public PEM key without -----BEGIN PUBLIC KEY----- and -----END PUBLIC KEY-----");
+                    }
+                }
+                if ($('input[name=JWT-Signing-Method]:checked').val() == 'HMAC') {
+                    $('#hmac-base64-div').css({ display: 'flex' });
+                } else {
+                    $('#hmac-base64-div').css({ display: 'none' });
+                }
+                if ($('input[name=JWT-Key-origin]:checked').val() == 'JWKS' && $('input[name=JWT-Key-origin-Source]:checked').val() == 'URL') {
+                    $('#jwks-additional-config').css({ display: 'flex' });
+                } else {
+                    $('#jwks-additional-config').css({ display: 'none' });
+                }
+                if ($('input[name=skip-clientid-validation]:checked').val() != 'on') {
+                    $('#clientid-expression').css({ display: 'flex' })
+                } else {
+                    $('#clientid-expression').css({ display: 'none' });
+                }
+                if ($('input[name=validate-audience-claim]:checked').val() == 'on') {
+                    $('#audience-expression').css({ display: 'flex' })
+                } else {
+                    $('#audience-expression').css({ display: 'none' });
+                }
+                if ($('input[name=mandate-custom-claim]:checked').val() == 'on') {
+                    $('#custom-claim-builder').css({ display: 'block' })
+                } else {
+                    $('#custom-claim-builder').css({ display: 'none' });
+                }
+                if ($('input[name=http-method]:checked').val() == 'FALSE') {
+                    $('#method-resource-builder').css({ display: 'block' })
+                } else {
+                    $('#method-resource-builder').css({ display: 'none' });
+                }
+                fill();
+            });
+            $(":input").on("keyup change", function () { fill(); });
+            let custom_claim_counter = 1, uri_condition = 1;
+            $("#custom-claim-add").on("click", function () {
+                let condition_div = `<div style="display: flex; flex-direction: row; align-items: center;" id="custom-claim-expression` + custom_claim_counter + `"><input style="width: 200px;" type="text" placeholder="Field Name" id="custom_field` + custom_claim_counter + `" onkeyup="fill();" /><div class="select" tabindex="1" style="width:100px; margin: 0 5px;"><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="==" id="opt1` + custom_claim_counter + `" checked><label for="opt1` + custom_claim_counter + `"class="option">==</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="&gt;" id="opt2` + custom_claim_counter + `"><label for="opt2` + custom_claim_counter + `"class="option">&gt;</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="&lt;" id="opt3` + custom_claim_counter + `"><label for="opt3` + custom_claim_counter + `"class="option">&lt;</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="&gt;=" id="opt4` + custom_claim_counter + `"><label for="opt4` + custom_claim_counter + `"class="option">&gt;=</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="&lt;=" id="opt5` + custom_claim_counter + `"><label for="opt5` + custom_claim_counter + `"class="option">&lt;=</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="!=" id="opt6` + custom_claim_counter + `"><label for="opt6` + custom_claim_counter + `"class="option">!=</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="in" id="opt7` + custom_claim_counter + `"><label for="opt7` + custom_claim_counter + `"class="option">IN</label><input class="selectopt" onchange="fill();changePlaceHolder(this);" name="custom-claim-expression` + custom_claim_counter + `" type="radio" value="notin" id="opt8` + custom_claim_counter + `"><label for="opt8` + custom_claim_counter + `"class="option">NOT IN</label></div><input type="text" placeholder="Field Value" id="custom_field_value` + custom_claim_counter + `" onkeyup="fill();" /><button type="button" style="background-color: transparent;cursor: pointer;" onclick="$.when( $('#custom-claim-expression` + custom_claim_counter + `').remove() ).then(function(){ fill()});">❌</button></div>`;
+                custom_claim_counter++;
+                $("#custom-claim-builder").append(condition_div);
+                fill();
+            });
+            $("#method-resource-add").on("click", function () {
+                let condition_div = `<div style="display: flex; flex-direction: row; align-items: center;" id="method-resource` + uri_condition + `"><div class="select" tabindex="1" style="width:200px; margin-right: 5px;"><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="GET" id="api-method1` + uri_condition + `" checked><label for="api-method1` + uri_condition + `" class="option">GET</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="POST" id="api-method2` + uri_condition + `"><label for="api-method2` + uri_condition + `" class="option">POST</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="PUT" id="api-method3` + uri_condition + `"><label for="api-method3` + uri_condition + `" class="option">PUT</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="PATCH" id="api-method4` + uri_condition + `"><label for="api-method4` + uri_condition + `" class="option">PATCH</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="DELETE" id="api-method5` + uri_condition + `"><label for="api-method5` + uri_condition + `" class="option">DELETE</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="OPTIONS" id="api-method6` + uri_condition + `"><label for="api-method6` + uri_condition + `" class="option">OPTIONS</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="HEAD" id="api-method7` + uri_condition + `"><label for="api-method7` + uri_condition + `" class="option">HEAD</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="TRACE" id="api-method8` + uri_condition + `"><label for="api-method8` + uri_condition + `" class="option">TRACE</label><input class="selectopt" name="method-resource` + uri_condition + `" onchange="fill();" type="radio" value="CONNECT" id="api-method9` + uri_condition + `"><label for="api-method9` + uri_condition + `" class="option">CONNECT</label></div><input type="text" onkeyup="fill();" placeholder="URI template regex" id="uri-regex` + uri_condition + `" /><button type="button" style="background-color: transparent; cursor: pointer;" onclick="$.when( $('#method-resource` + uri_condition + `').remove()).then(function(){fill()});">❌</button></div>`;
+                uri_condition++;
+                $("#method-resource-builder").append(condition_div);
+                fill();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="form-main">
+        <div id="form-div">
+            <h1> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1"
+                    width="60" height="60" style="margin-right: 10px;">
+                    <g transform="matrix(1.3333334 0 0 1.3333334 0 0)">
+                        <image x="0" y="0"
+                            xlink:href="data:image/png;base64,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"
+                            preserveAspectRatio="none" width="45" height="45" />
+                    </g>
+                </svg> JWT Validation Policy
+            </h1>
+            <div id="gradient">&nbsp;</div>
+            <form class="form" id="policy_form">
+
+                <!-- Token Expression -->
+                <div class="field_groups">
+                    <label class="field-desc" for="token-expression"><span style="color: #161616;">Token
+                            Expression</span><br>
+                        XPath Expression to be used to extract the token from API requests</label><br>
+                    <label class="container">HTTP Bearer Authentication Header
+                        <input type="radio" checked="checked" name="token-expression"
+                            value="HTTPInputHeader/Authorization" id="default_token_expression">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container">Custom Expression
+                        <input type="radio" name="token-expression" id="custom_token_expression" value="custom">
+                        <span class="checkmark"></span>
+                    </label>
+                    <input type="text" style="display:none;margin-top:30px;"
+                        placeholder="Custom Expression from where JWT to be extracted" id="token-expression"
+                        value="HTTPInputHeader/Authorization" required />
+                </div>
+
+                <!-- JWT Signing Method -->
+                <div class="field_groups">
+                    <label class="field-desc" for="JWT-Signing-Method"><span style="color: #161616;">JWT Signing
+                            Method</span><br>
+                        Specifies the method to be used by the policy to decode the token.</label><br>
+                    <div class="select" tabindex="1">
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="RSA" id="RSA" checked>
+                        <label for="RSA" class="option">RSA (256, 384, 512)</label>
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="PS" id="PS">
+                        <label for="PS" class="option">PS (256, 384, 512)</label>
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="ED" id="ED">
+                        <label for="ED" class="option">ED (EdDSA - Ed25519)</label>
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="ES" id="ES">
+                        <label for="ES" class="option">ES (ECDSA 256, 284, 512)</label>
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="HMAC" id="HMAC">
+                        <label for="HMAC" class="option">HMAC (256, 384, 512)</label>
+                        <input class="selectopt" name="JWT-Signing-Method" type="radio" value="NONE" id="NONE">
+                        <label for="NONE" class="option">NONE (not recommended)</label>
+                    </div>
+                </div>
+
+                <!-- JWT Key origin -->
+                <div class="field_groups" id="JWT-Key-origin">
+                    <label class="field-desc" for="JWT-Key-origin"><span style="color: #161616;">JWT Key
+                            origin</span><br>
+                        Origin of the JWT Key. The JWKS option is not supported if the token Signing Method was set to
+                        HMAC. Field value is ignored if the token Signing Method was set to NONE.</label><br>
+                    <div style="display: flex; flex-direction: row;">
+                        <label class="container" id="JWKS_wrap">JWKS
+                            <input type="radio" name="JWT-Key-origin" value="JWKS" id="JWKS" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container" id="CERT_wrap" style="margin-left: 20px;">Certificate
+                            <input type="radio" name="JWT-Key-origin" value="CERT" id="CERT">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container" style="margin-left: 20px;">Key
+                            <input type="radio" name="JWT-Key-origin" value="KEY" id="Key">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <span class="field-text" style="margin-bottom: 5px;">
+                        <span id="JWT-Key-origin-value">JWKS</span> will be read from</span><br>
+                    <div style="display: flex; flex-direction: row;">
+                        <label class="container" id="URL_wrap">URL
+                            <input type="radio" name="JWT-Key-origin-Source" value="URL" id="URL" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container" style="margin-left: 20px;">File
+                            <input type="radio" name="JWT-Key-origin-Source" value="File">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container" style="margin-left: 20px;">Text
+                            <input type="radio" name="JWT-Key-origin-Source" value="Text" id="Text">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <div style="width: 120px;height: 45.5px;background-color: #161616;display: flex;align-items: center;justify-content: center;font-size: 2em;color: white;"
+                            id="JWKS_URL_or_Key_logo">URL</div>
+                        <input type="text" placeholder="JWKS URL or Certificate or Key" id="JWKS_URL_or_Key"
+                            value="https://{yourDomain}/.well-known/jwks.json" />
+                    </div>
+                    <div id="hmac-base64-div" style="display: none;">
+                        <label class="container">Key is Base64 Encoded<br>
+                            <span class="field-text">In certain scenarios, the Key is not Base64 encoded</span>
+                            <input type="checkbox" name="hmac-base64-encoded" checked>
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                    </div>
+                    <div id="jwks-additional-config"
+                        style="margin-top: 10px;display: flex;flex-direction: row; justify-content: space-between; align-items: flex-end;">
+                        <div id="jwks-caching" style="display: flex;flex-direction: column; width: 49.5%;">
+                            <label for="JWKS_Caching">JWKS Caching (in minutes)<br><span class="field-text">Caching will
+                                    allow app to perform faster, however caching needs to be handled for signing key
+                                    rotations.</span></label>
+                            <input type="number" min="0" oninput="validity.valid||(value='')" id="JWKS_Caching"
+                                value="60">
+                        </div>
+                        <div id="jwks-caching" style="display: flex;flex-direction: column; width: 49.5%;">
+                            <label for="JWKS_Caching">JWKS Service timeout (in seconds)<br>
+                                <span class="field-text"><b>connectTimeout</b> - The URL connection timeout.<br>
+                                    <b>readTimeout</b> - The URL read timeout.<br>
+                                    If zero, no timeout (infinite). Default is 10 seconds.</span></label>
+                            <input type="number" min="0" oninput="validity.valid||(value='')" id="JWKS_timeout"
+                                value="10">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skip Client Id Validation -->
+                <div class="field_groups">
+                    <div style="display: flex;flex-direction: column;">
+                        <label class="container">Skip Client Id Validation<br>
+                            <span class="field-text">Skips client application's API contract validation.</span>
+                            <input type="checkbox" name="skip-clientid-validation">
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                        <div style="display: flex; flex-direction: row;" id="clientid-expression">
+                            <input style="width: 160px;" name="client_id_field" type="text"
+                                placeholder="Client Id Field Name" id="client_id_field" value="client_id" />
+                            <span
+                                style="display: flex;align-items: center;margin-left: 10px; margin-right: 10px;text-align: center;">should
+                                be one of </span>
+                            <input name="client_id" type="text" placeholder="comma separated Client Ids"
+                                id="client_id" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validate Audience Claim -->
+                <div class="field_groups">
+                    <div style="display: flex;flex-direction: column;">
+                        <label class="container">Validate Audience Claim<br>
+                            <span class="field-text">The token will be valid only if the aud claim contains at least one
+                                audiences value.</span>
+                            <input type="checkbox" name="validate-audience-claim">
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                        <div style="display: none;flex-direction: column;" id="audience-expression">
+                            <div id="mandate-audience">
+                                <label class="container">Audience Claim Mandatory<br>
+                                    <span class="field-text">If this is checked, and one of the values from <i>Audience
+                                            Claim Values</i> is not present in the incoming token, the request will
+                                        fail.</span>
+                                    <input type="checkbox" name="mandate-audience-claim">
+                                    <span class="checkmark tick" style="margin-top: 12px;"></span>
+                            </div>
+                            <div id="mandate-audience-value">
+                                <label style="margin-left: 0;">Audience Claim Values<br>
+                                    <span class="field-text">Comma separated list of supported audience values. Atleast
+                                        one
+                                        value must be present in the token.</span></label><br>
+                                <input type="text" placeholder="comma separated audience values" id="audience_field"
+                                    value="aud.example.com" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expiration Claim Mandatory -->
+                <div class="field_groups">
+                    <div style="display: flex;flex-direction: column;">
+                        <label class="container">Expiration Claim Mandatory<br>
+                            <span class="field-text">If a claim is marked as mandatory, and exp claim is not present in
+                                the incoming JWT, the request will fail.</span>
+                            <input type="checkbox" name="mandate-exp-claim">
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Not Before Claim Mandatory -->
+                <div class="field_groups">
+                    <div style="display: flex;flex-direction: column;">
+                        <label class="container">Not Before Claim Mandatory<br>
+                            <span class="field-text">If a claim is marked as mandatory, and nbf claim is not present in
+                                the incoming JWT, the request will fail.</span>
+                            <input type="checkbox" name="mandate-nbf-claim">
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Validate Custom Claim -->
+                <div class="field_groups">
+                    <div style="display: flex;flex-direction: column;">
+                        <label class="container">Validate Custom Claim<br>
+                            <span class="field-text">The token will be valid only if all expressions defined
+                                here are valid.</span>
+                            <input type="checkbox" name="mandate-custom-claim">
+                            <span class="checkmark tick" style="margin-top: 12px;"></span>
+                        </label>
+                    </div>
+                    <div id="custom-claim-builder" style="display: none; background-color: #dcdcdc; padding: 10px;">
+                        <div>
+                            <button style="cursor: pointer; padding: 5px;" type="button" id="custom-claim-add">Add
+                                Condition ➕</button>
+                        </div>
+                        <div style="display: flex; flex-direction: row; align-items: center;"
+                            id="custom-claim-expression0">
+                            <input style="width: 200px;" type="text" placeholder="Field Name" id="custom_field0" />
+                            <div class="select" tabindex="1" style="width:100px; margin: 0 5px;">
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="==" id="opt10" checked><label for="opt10" class="option">==</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="&gt;" id="opt20"><label for="opt20" class="option">&gt;</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="&lt;" id="opt30"><label for="opt30" class="option">&lt;</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="&gt;=" id="opt40"><label for="opt40" class="option">&gt;=</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="&lt;=" id="opt50"><label for="opt50" class="option">&lt;=</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="!=" id="opt60"><label for="opt60" class="option">!=</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="in" id="opt70"><label for="opt70" class="option">IN</label>
+                                <input class="selectopt" name="custom-claim-expression0" onchange="changePlaceHolder(this);" type="radio" value="notin" id="opt80"><label for="opt80" class="option">NOT IN</label>
+                            </div>
+                            <input type="text" placeholder="Field Value" id="custom_field_value0" onkeyup="changePlaceHolder(this);" />
+                            <button type="button" style="background-color: transparent;cursor: pointer;"
+                                onclick="$.when( $('#custom-claim-expression0').remove() ).then(function() { fill() });">❌</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced options -->
+                <div class="field_groups">
+                    <div class="tab">
+                        <input class="accordion" type="checkbox" id="chck1">
+                        <label class="tab-label" for="chck1">
+                            <div style="display: flex;flex-direction: column;">Advanced options<br>
+                                <span class="field-text">Configure methods and resources</span>
+                            </div>
+                        </label>
+                        <div class="tab-content">
+                            <span class="field-text">Method & resource conditions</span>
+                            <div style="display: flex; flex-direction: row; margin-top: 20px;">
+                                <label class="container" style="padding-right: 20px;">Apply configuration to all API
+                                    method & resources
+                                    <input type="radio" name="http-method" value="TRUE" checked><span
+                                        class="checkmark"></span>
+                                </label>
+                                <label class="container" style="padding-right: 20px;">Apply configuration to specific
+                                    API method & resources
+                                    <input type="radio" name="http-method" value="FALSE"><span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div style="display: none; background-color: #dcdcdc; padding: 10px;"
+                                id="method-resource-builder">
+                                <button style="cursor: pointer; padding: 5px;margin-bottom: 10px;" type="button"
+                                    id="method-resource-add">Add Condition ➕</button>
+                                <div style="display: flex; flex-direction: row; align-items: center;"
+                                    id="method-resource0">
+                                    <div class="select" tabindex="1" style="width:200px; margin-right: 5px;">
+                                        <input class="selectopt" name="method-resource0" type="radio" value="GET"
+                                            id="api-method10" checked><label for="api-method10"
+                                            class="option">GET</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="POST"
+                                            id="api-method20"><label for="api-method20" class="option">POST</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="PUT"
+                                            id="api-method30"><label for="api-method30" class="option">PUT</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="PATCH"
+                                            id="api-method40"><label for="api-method40" class="option">PATCH</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="DELETE"
+                                            id="api-method50"><label for="api-method50" class="option">DELETE</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="OPTIONS"
+                                            id="api-method60"><label for="api-method60" class="option">OPTIONS</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="HEAD"
+                                            id="api-method70"><label for="api-method70" class="option">HEAD</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="TRACE"
+                                            id="api-method80"><label for="api-method80" class="option">TRACE</label>
+                                        <input class="selectopt" name="method-resource0" type="radio" value="CONNECT"
+                                            id="api-method90"><label for="api-method90" class="option">CONNECT</label>
+                                    </div>
+                                    <input type="text" placeholder="URI template regex" id="uri-regex0" />
+                                    <button type="button" style="background-color: transparent; cursor: pointer;"
+                                        onclick="$.when( $('#method-resource0').remove()).then(function(){fill()});">❌</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional options -->
+                <div class="field_groups">
+                    <div class="tab">
+                        <input class="accordion" type="checkbox" id="chck2">
+                        <label class="tab-label" for="chck2">
+                            <div style="display: flex;flex-direction: column;">
+                                Additional options<br>
+                                <span class="field-text">Restrict API with HTTP methods</span>
+                            </div>
+                        </label>
+                        <div class="tab-content">
+                            <span class="field-text">By default, an HTTP Listener source supports all methods,
+                                but you can restrict the available methods.</span>
+                            <div>
+                                <ul id="http-allowed-methods">
+                                    <li><label class="container" style="padding-right: 50px;">GET
+                                            <input type="checkbox" id="http-method-get" value="GET" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">POST
+                                            <input type="checkbox" id="http-method-post" value="POST" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">PUT
+                                            <input type="checkbox" id="http-method-put" value="PUT" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">PATCH
+                                            <input type="checkbox" id="http-method-patch" value="PATCH" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">DELETE
+                                            <input type="checkbox" id="http-method-delete" value="DELETE" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">OPTIONS
+                                            <input type="checkbox" id="http-method-options" value="OPTIONS" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">HEAD
+                                            <input type="checkbox" id="http-method-head" value="HEAD" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">TRACE
+                                            <input type="checkbox" id="http-method-trace" value="TRACE" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                    <li><label class="container" style="padding-right: 50px;">CONNECT
+                                            <input type="checkbox" id="http-method-connect" value="CONNECT" checked>
+                                            <span class="checkmark tick"></span>
+                                        </label></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policy Name -->
+                <div class="field_groups">
+                    <label class="field-desc" for="JWT-Signing-Method">
+                        <span style="color: #161616;">JWT Policy Name</span><br>
+                        Specifies the policy name, same name to be used for policy download.</label><br>
+                    <input type="text" id="policy-name" placeholder="Policy Name" value="myJWTPolicy">
+                </div>
+
+                <!-- Download Button -->
+                <div style="padding-top: 50px;">
+                    <button type="button" value="Download" class="button-blue" onclick="download()">Download &nbsp;
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1"
+                            width="21" height="21">
+                            <g transform="matrix(1.3333334 0 0 1.3333334 0 0)">
+                                <image x="0" y="0"
+                                    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEQSURBVDhP7ZI9agJBHEdX3KBBSBUsPEUsTJs6BGITO88RSGFlGz2BpMgFQiC5gCF9IJBDSHKCFOv7/WdGUHaGFS0sfPCYD2feLotZFYqiuMJbvPBbu0PsC8XMb+0OsWPUOLAolwfY8MvSKPNzvPbLNBwc6Ta8o4UZ16KMbfzGf7zTXhQO1PEVAxbGVRT1hgoGxv56HA4p8mbHHXrIj5sWLxgeIB6x5q+m4WAT9ZYpplgtGOBCKpwO8uMJdiK2cDOsoD5R2XlZU/QSYzyjwuEbT/AM57YqJ1e05+ZRFD7FISr4iSksmnrTwBMq+GGrdfp446ZG5ahY+HGTB7x3U2OraFUs2sU//N2Tuf9j7ZMsWwLzPF9g4ZwW1gAAAABJRU5ErkJggg=="
+                                    preserveAspectRatio="none" width="15.75" height="15.75" />
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="info-div">
+            <h1 style="margin-top: 0;margin-bottom: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1"
+                    width="240" height="80">
+                    <g transform="matrix(1.3333334 0 0 1.3333334 0 0)">
+                        <image x="0" y="0"
+                            xlink:href="data:image/png;base64,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"
+                            preserveAspectRatio="none" width="180" height="60" />
+                    </g>
+                </svg>
+            </h1>
+            <div id="gradient">&nbsp;</div>
+            <div id="JWT_default">
+                <p>This IBM App Connect Enterprise UserDefined Policy must be used along with the subflow developed for
+                    validating the signature of the token and asserts the values of the claims of all incoming requests.
+                    <i style="background-color: #dcdcdc;">The policy validates JWT with JWS format and not JWE</i>.
+                    The below policy is a reflection of fields selected on the left section to build the policy.
+                    Changing the fields will change the policyxml immediately. You can download the policy using the
+                    Download Button on the left.
+                </p>
+            </div>
+            <div style="position: relative;">
+                <button type="button" id="copy_to_clip" onclick="copy()">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="body_1"
+                        width="30" height="30">
+                        <g transform="matrix(1.3333334 0 0 1.3333334 0 0)">
+                            <image x="0" y="0"
+                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKqSURBVEhL7ZbNS1RRGMZnbFcSrgKrhfUPBBX0D7RSUjCnoKgsTAuqRUSEFTlTk6VORZGNpAuhKSq8o4QVpfM9joMFOjpWUDhu+oDaBBE0597T897OudyJKa5zoU3zwo/3znve8zznYzHHYTWaWi86RV4LDoNecBnUgWU0tv2gV++xHeOJGefMfM554vyALgyDrWAB8N+4Ayqp59LNhxWhiYwzlMwsfRGYVDEWny6Y2HDAsw7i74URE5lQRfaLViNIhxA/rQfMVz0Nv1zNOV+x+2iPD0cpjb6BfhAF+gIw9rXDF9iC3qqRZ+nqSGp2pZChBVjbPRp3guR4IrMYS2dz1/pHFnYc6iQzTRh1UR9yFchRrbHFy1pP3vioPE69jU1mF3FN76AxCNYLzeLmGNDvEXkf4JjI4+ksDygRfUeNLRe4q8044j7qRa4BH6jmauvUtjV7+LGzfh7GfNIQvAbVQrvQXBaQl4N5QMb55NQr1Xv9fr6+2a2SsDAlaAER8EbWXADHreFkmPIklY9OzqnQ+EFaoF3oF963LCBvAJ8BGWsw1txX7rKG/R4OQdrVX9EXgAU+eBRnuCLSUEkLDJl9jJAF5E3AbMyv3h5mtXvOafU4xl+4Cfx2MzoJWaPF1e3t4LuOdKmjY1NqJDUHjYw0Dpp9jJAF5I3gC6BmLTwxy5/HprXewVHWfUthvr4g6/ErRQjqY93+oXwgGGVRmAqN0owpk3kCO0++sAYdsZhvz5jAsS8JOQ9I42GzjxGygFzU2AZl47Jx2VhvLhuXwv9rXNqfhA0sGxsPAfBPjOWbqwZ8AuZJdsiLPCD09QdlQaAod31PNDObSFOi1uxRECjKXa8BISAn2eE7OKUbIPD9x7e1NK8ETaAdnAGnRbaC7D0ONuvCCHybTB2On0/VCiZs3/LpAAAAAElFTkSuQmCC"
+                                preserveAspectRatio="none" width="22.5" height="22.5" />
+                        </g>
+                    </svg>
+                    <span class="tooltiptext">Copy</span>
+                </button>
+                <pre id="policyxml"></pre>
+            </div>
+        </div>
+    </div>
+    <script>
+        function addLineClass(pre) {
+            var lines = pre.innerText.split("\n");
+            while (pre.childNodes.length > 0) {
+                pre.removeChild(pre.childNodes[0]);
+            }
+            for (var i = 0; i < lines.length; i++) {
+                var span = document.createElement("span");
+                span.className = "line";
+                span.innerText = lines[i];
+                pre.appendChild(span);
+                pre.appendChild(document.createTextNode("\n"));
+            }
+        }
+        function format() {
+            var pres = document.getElementsByTagName("pre");
+            for (var i = 0; i < pres.length; i++) {
+                addLineClass(pres[i]);
+            }
+        }
+        function fill(policyName) {
+            let HTTP_Methods_Allowed = '',
+                JWT_location_in_API_requests,
+                JWT_Signing_Method,
+                JWT_Key_origin = '',
+                JWKS_URL_or_Key = '',
+                Key_Base64_Encoded = '',
+                JWKS_Caching_TTL = '',
+                JWKS_Service_connection_timeout = '',
+                Skip_Client_Id_Validation = 'TRUE',
+                Client_ID_Expression = '',
+                Validate_Audience_Claim = 'FALSE',
+                Audience_Claim_Mandatory = 'FALSE',
+                Audience_Claim_Values = '',
+                Expiration_Claim_Mandatory,
+                Not_Before_Claim_Mandatory,
+                Validate_Custom_Claim,
+                Mandatory_Custom_Claim_Validations = '',
+                Advance_Apply_configuration_to_all_API_method_and_resources = 'TRUE',
+                Advance_Apply_configuration_to_specific_API_method_and_resources = '';
+
+            /*--------------------*/
+            /* calculating values */
+            /*--------------------*/
+
+            // HTTP_Methods_Allowed
+            $("[id^='http-method-']:checked").each(function () { HTTP_Methods_Allowed = HTTP_Methods_Allowed + $(this).val() + '; '; });
+            HTTP_Methods_Allowed = HTTP_Methods_Allowed.replace(/;\s*$/g, "");
+            if (HTTP_Methods_Allowed == 'GET; POST; PUT; PATCH; DELETE; OPTIONS; HEAD; TRACE; CONNECT') {
+                HTTP_Methods_Allowed = '';
+            } else {
+                HTTP_Methods_Allowed = `\t\t<HTTP_Methods_Allowed>` + HTTP_Methods_Allowed + `</HTTP_Methods_Allowed>\n`;
+            }
+
+            // JWT_location_in_API_requests
+            if ($('input[name=token-expression]:checked').val() == 'custom') {
+                JWT_location_in_API_requests = $('#token-expression').val();
+            } else {
+                JWT_location_in_API_requests = $('input[name=token-expression]:checked').val();
+            }
+
+            // JWT_Signing_Method, JWT_Key_origin and JWKS_URL_or_Key
+            JWT_Signing_Method = $('input[name=JWT-Signing-Method]:checked').val();
+            if (JWT_Signing_Method != 'NONE') {
+                JWT_Key_origin = `\t\t<JWT_Key_origin>` + $('input[name=JWT-Key-origin]:checked').val() + `</JWT_Key_origin>\n`;
+
+                // JWKS_URL_or_Key
+                if ($('input[name=JWT-Key-origin-Source]:checked').val() == 'File') {
+                    JWKS_URL_or_Key = `\t\t<JWKS_URL_or_Key>file://` + $('#JWKS_URL_or_Key').val() + `</JWKS_URL_or_Key>\n`;
+                } else {
+                    JWKS_URL_or_Key = `\t\t<JWKS_URL_or_Key>` + $('#JWKS_URL_or_Key').val() + `</JWKS_URL_or_Key>\n`;
+                }
+            }
+
+            // Key_Base64_Encoded
+            if (JWT_Signing_Method == 'HMAC') {
+                if ($('input[name=hmac-base64-encoded]:checked').val() == 'on') {
+                    Key_Base64_Encoded = `\t\t<Key_Base64_Encoded>TRUE</Key_Base64_Encoded>\n`;
+                } else {
+                    Key_Base64_Encoded = `\t\t<Key_Base64_Encoded>FALSE</Key_Base64_Encoded>\n`;
+                }
+            }
+
+            if (JWT_Signing_Method != 'NONE' && $('input[name=JWT-Key-origin]:checked').val() == 'JWKS' && $('input[name=JWT-Key-origin-Source]:checked').val() == 'URL') {
+                JWKS_Caching_TTL = `\t\t<JWKS_Caching_TTL>` + $('#JWKS_Caching').val() + `</JWKS_Caching_TTL>\n`;
+                JWKS_Service_connection_timeout = `\t\t<JWKS_Service_connection_timeout>` + $('#JWKS_timeout').val() + `</JWKS_Service_connection_timeout>\n`;
+                if ($('#JWKS_timeout').val() == '') {
+                    JWKS_Service_connection_timeout = `\t\t<JWKS_Service_connection_timeout>10</JWKS_Service_connection_timeout>\n`;
+                }
+            }
+
+            // Skip_Client_Id_Validation & Client_ID_Expression
+            if ($('input[name=skip-clientid-validation]:checked').val() != 'on') {
+                if ($('#client_id_field').val() != '' && $('#client_id').val() != '') {
+                    Skip_Client_Id_Validation = 'FALSE';
+                    Client_ID_Expression = $('#client_id_field').val() + ' in ' + $('#client_id').val();
+                }
+            }
+
+            // Validate_Audience_Claim, Audience_Claim_Mandatory && Audience_Claim_Values
+            Validate_Audience_Claim = ($('input[name=validate-audience-claim]:checked').val() == 'on').toString().toUpperCase();
+            if (Validate_Audience_Claim == 'TRUE') {
+                if ($('input[name=mandate-audience-claim]:checked').val() == 'on' && $('#audience_field').val().trim() != '') {
+                    Audience_Claim_Mandatory = 'TRUE';
+                    Audience_Claim_Values = `\t\t<Audience_Claim_Values>` + $('#audience_field').val() + `</Audience_Claim_Values>\n`;
+                }
+            }
+
+            // Expiration_Claim_Mandatory
+            Expiration_Claim_Mandatory = ($('input[name=mandate-exp-claim]:checked').val() == 'on').toString().toUpperCase();
+
+            // Not_Before_Claim_Mandatory
+            Not_Before_Claim_Mandatory = ($('input[name=mandate-nbf-claim]:checked').val() == 'on').toString().toUpperCase();
+
+            // Validate_Custom_Claim
+            Validate_Custom_Claim = ($('input[name=mandate-custom-claim]:checked').val() == 'on').toString().toUpperCase();
+            if (Validate_Custom_Claim == 'TRUE') {
+                $("div[id^='custom-claim-expression']").each(function () {
+                    let id = (this.id).slice(-1);
+                    let custom_field = $('#custom_field' + id).val().trim();
+                    let operator = $('input[type=radio][name=custom-claim-expression' + id + ']:checked').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    let custom_field_value = $('#custom_field_value' + id).val().trim();
+                    if (custom_field != '' && custom_field_value != '') {
+                        if (((operator == "&gt;" || operator == "&lt;" || operator == "&gt;=" || operator == "&lt;=") && (/^(\+|-)?\d*\.?\d*$/g.test(custom_field_value))) || (operator == "==" || operator == "!=" || operator == "in" || operator == "notin")) {
+                            Mandatory_Custom_Claim_Validations = Mandatory_Custom_Claim_Validations + custom_field + " " + operator + " " + custom_field_value + '; ';
+                        }
+                    }
+                });
+                Mandatory_Custom_Claim_Validations = Mandatory_Custom_Claim_Validations.replace(/;\s*$/g, "");
+                if (Mandatory_Custom_Claim_Validations == '') { Validate_Custom_Claim = 'FALSE'; }
+            }
+
+            // Advance_Apply_configuration_to_all_API_method_and_resources
+            Advance_Apply_configuration_to_all_API_method_and_resources = $('input[name=http-method]:checked').val();
+            if (Advance_Apply_configuration_to_all_API_method_and_resources == 'FALSE') {
+                $("div[id^='method-resource']").each(function () {
+                    let id = (this.id).slice(-1);
+                    let method = $('input[type=radio][name=method-resource' + id + ']:checked').val();
+                    let uri_field = $('#uri-regex' + id).val();
+                    if (uri_field != '' && uri_field != undefined) {
+                        Advance_Apply_configuration_to_specific_API_method_and_resources = Advance_Apply_configuration_to_specific_API_method_and_resources + method + " " + uri_field + '; ';
+                    }
+                });
+                Advance_Apply_configuration_to_specific_API_method_and_resources = Advance_Apply_configuration_to_specific_API_method_and_resources.replace(/;\s*$/g, "");
+                if (Advance_Apply_configuration_to_specific_API_method_and_resources == '') { Advance_Apply_configuration_to_all_API_method_and_resources = 'TRUE'; }
+            }
+
+            // Creating policyxml
+            let policyxml =
+                `<?xml version="1.0" encoding="UTF-8"?>\n` +
+                `<policies>\n` +
+                `\t<policy policyName="` + $('#policy-name').val() + `" policyType="UserDefined" policyTemplate="UserDefined">\n` +
+                HTTP_Methods_Allowed +
+                `\t\t<JWT_location_in_API_requests>` + JWT_location_in_API_requests + `</JWT_location_in_API_requests>\n` +
+                `\t\t<JWT_Signing_Method>` + JWT_Signing_Method + `</JWT_Signing_Method>\n` +
+                JWT_Key_origin +
+                JWKS_URL_or_Key +
+                Key_Base64_Encoded +
+                // `\t\t<Key_Base64_Encoded>`+Key_Base64_Encoded+`</Key_Base64_Encoded>\n` +
+                JWKS_Caching_TTL +
+                JWKS_Service_connection_timeout +
+                `\t\t<Skip_Client_Id_Validation>` + Skip_Client_Id_Validation + `</Skip_Client_Id_Validation>\n` +
+                `\t\t<Client_ID_Expression>` + Client_ID_Expression + `</Client_ID_Expression>\n` +
+                `\t\t<Validate_Audience_Claim>` + Validate_Audience_Claim + `</Validate_Audience_Claim>\n` +
+                `\t\t<Audience_Claim_Mandatory>` + Audience_Claim_Mandatory + `</Audience_Claim_Mandatory>\n` +
+                Audience_Claim_Values +
+                `\t\t<Expiration_Claim_Mandatory>` + Expiration_Claim_Mandatory + `</Expiration_Claim_Mandatory>\n` +
+                `\t\t<Not_Before_Claim_Mandatory>` + Not_Before_Claim_Mandatory + `</Not_Before_Claim_Mandatory>\n` +
+                `\t\t<Validate_Custom_Claim>` + Validate_Custom_Claim + `</Validate_Custom_Claim>\n` +
+                `\t\t<Mandatory_Custom_Claim_Validations>` + Mandatory_Custom_Claim_Validations + `</Mandatory_Custom_Claim_Validations>\n` +
+                `\t\t<Advance_Apply_configuration_to_all_API_method_and_resources>` + Advance_Apply_configuration_to_all_API_method_and_resources + `</Advance_Apply_configuration_to_all_API_method_and_resources>\n` +
+                `\t\t<Advance_Apply_configuration_to_specific_API_method_and_resources>` + Advance_Apply_configuration_to_specific_API_method_and_resources + `</Advance_Apply_configuration_to_specific_API_method_and_resources>\n` +
+                `\t</policy>\n` +
+                `</policies>`;
+            $('#policyxml').text(policyxml);
+            format();
+        }
+        function download() {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($('#policyxml').text()));
+            element.setAttribute('download', $('#policy-name').val() + '.policyxml');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        function copy() {
+            var temp = $("<textarea>");
+            $("body").append(temp);
+            temp.val($('#policyxml').text()).select();
+            document.execCommand("copy");
+            temp.remove();
+        }
+        function changePlaceHolder(elem) {
+            let id = (elem.name).slice(-1);
+            if ($('input[name=custom-claim-expression' + id + ']:checked').val() == 'in' || $('input[name=custom-claim-expression' + id + ']:checked').val() == 'notin') {
+                $('#custom_field_value' + id).attr('placeholder', 'One of the comma seperated values');
+            } else if ($('input[name=custom-claim-expression' + id + ']:checked').val() == '==' || $('input[name=custom-claim-expression' + id + ']:checked').val() == '!=') {
+                $('#custom_field_value' + id).attr('placeholder', 'Field Value');
+            } else {
+                $('#custom_field_value' + id).attr('placeholder', 'Field Value (either decimal or numbers)');
+            }
+        }
+    </script>
+</body>
+
+</html>

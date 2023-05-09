@@ -1,0 +1,29 @@
+###==-----------------------------------------------------------==###
+#                               JWKS URL                            #
+###==-----------------------------------------------------------==###
+GET http://localhost:7800/jwks/keys
+
+
+###==-----------------------------------------------------------==###
+#                              Variables                            #
+###==-----------------------------------------------------------==###
+# @algorith=NONE
+@algorith=RSA
+# @algorith=PS
+# @algorith=ES
+# @algorith=ED
+# @algorith=HMAC
+
+# @rotateSigner=TRUE
+@rotateSigner=FALSE
+
+@keysize=256
+# @keysize=384
+# @keysize=512
+###==-----------------------------------------------------------==###
+#                               Token URL                           #
+###==-----------------------------------------------------------==###
+GET http://localhost:7800/oauth/token
+?algorithm={{algorith}}
+&new={{rotateSigner}}
+&keysize={{keysize}}

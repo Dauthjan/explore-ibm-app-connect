@@ -1,0 +1,54 @@
+BROKER SCHEMA com.dev.test.jwt
+
+DECLARE rootPath CONSTANT CHARACTER 'C:\Users\Admin\IBM\ACET12\zero-to-hero\JWT_TestApp\';
+
+CREATE COMPUTE MODULE generateJWT
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		SET OutputRoot.Properties.ContentType = 'application/json';
+		DECLARE algorithm           CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.algorithm;
+		
+		CASE algorithm
+		WHEN 'NONE' THEN
+			SET OutputRoot.BLOB.BLOB = getNoneToken();
+		WHEN 'RSA' THEN
+			DECLARE rotateSigner        BOOLEAN   CAST(InputLocalEnvironment.HTTP.Input.QueryString.new AS BOOLEAN);
+			DECLARE keySize             CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.keysize;
+			DECLARE CertificatePath     CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_Cert.cer';
+			DECLARE PrivateKeyPath      CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PrivateKey.pem';
+			DECLARE PublicKeyPath       CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PublicKey.pem';
+			DECLARE JWKSPath            CHARACTER rootPath || 'JWKS.json';
+			SET OutputRoot.BLOB.BLOB = getRSAToken(rotateSigner, keySize, CertificatePath, PrivateKeyPath, PublicKeyPath, JWKSPath);
+		WHEN 'PS' THEN
+			DECLARE rotateSigner        BOOLEAN   CAST(InputLocalEnvironment.HTTP.Input.QueryString.new AS BOOLEAN);
+			DECLARE keySize             CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.keysize;
+			DECLARE CertificatePath     CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_Cert.cer';
+			DECLARE PrivateKeyPath      CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PrivateKey.pem';
+			DECLARE PublicKeyPath       CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PublicKey.pem';
+			DECLARE JWKSPath            CHARACTER rootPath || 'JWKS.json';
+			SET OutputRoot.BLOB.BLOB = getPSToken(rotateSigner, keySize, CertificatePath, PrivateKeyPath, PublicKeyPath, JWKSPath);
+		WHEN 'ES' THEN
+			DECLARE rotateSigner        BOOLEAN   CAST(InputLocalEnvironment.HTTP.Input.QueryString.new AS BOOLEAN);
+			DECLARE keySize             CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.keysize;
+			DECLARE CertificatePath     CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_Cert.cer';
+			DECLARE PrivateKeyPath      CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PrivateKey.pem';
+			DECLARE PublicKeyPath       CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_PublicKey.pem';
+			DECLARE JWKSPath            CHARACTER rootPath || 'JWKS.json';
+			SET OutputRoot.BLOB.BLOB = getESToken(rotateSigner, keySize, CertificatePath, PrivateKeyPath, PublicKeyPath, JWKSPath);
+		WHEN 'ED' THEN
+			DECLARE rotateSigner        BOOLEAN   CAST(InputLocalEnvironment.HTTP.Input.QueryString.new AS BOOLEAN);
+			DECLARE PrivateKeyPath      CHARACTER rootPath || 'JWT_Implementation_'||algorithm||'_PrivateKey.pem';
+			DECLARE PublicKeyPath       CHARACTER rootPath || 'JWT_Implementation_'||algorithm||'_PublicKey.pem';
+			DECLARE JWKSPath            CHARACTER rootPath || 'JWKS.json';
+			SET OutputRoot.BLOB.BLOB = getEDToken(rotateSigner, PrivateKeyPath, PublicKeyPath, JWKSPath);
+		WHEN 'HMAC' THEN
+			DECLARE rotateSigner        BOOLEAN   CAST(InputLocalEnvironment.HTTP.Input.QueryString.new AS BOOLEAN);
+			DECLARE keySize             CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.keysize;
+			DECLARE SecretKeyPath       CHARACTER rootPath || 'JWT_Implementation_'||algorithm||keySize||'_Secret.pem';
+			SET OutputRoot.BLOB.BLOB = getHMACToken(rotateSigner, keySize, SecretKeyPath);
+		END CASE;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

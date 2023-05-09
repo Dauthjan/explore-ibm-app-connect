@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies>
+	<policy policyName="JWT_PS_JWKS" policyType="UserDefined" policyTemplate="UserDefined">
+		<HTTP_Methods_Allowed>POST; PUT; PATCH</HTTP_Methods_Allowed>
+		<JWT_location_in_API_requests>HTTPInputHeader/Authorization</JWT_location_in_API_requests>
+		<JWT_Signing_Method>PS</JWT_Signing_Method>
+		<JWT_Key_origin>JWKS</JWT_Key_origin>
+		<JWKS_URL_or_Key>http://localhost:7800/jwks/keys</JWKS_URL_or_Key>
+		<JWKS_Caching_TTL>60</JWKS_Caching_TTL>
+		<JWKS_Service_connection_timeout>10</JWKS_Service_connection_timeout>
+		<Skip_Client_Id_Validation>FALSE</Skip_Client_Id_Validation>
+		<Client_ID_Expression>client_id in esb_testing</Client_ID_Expression>
+		<Validate_Audience_Claim>TRUE</Validate_Audience_Claim>
+		<Audience_Claim_Mandatory>TRUE</Audience_Claim_Mandatory>
+		<Audience_Claim_Values>http://esbtesting.com/, http://acetesting.com/, http://muletesting.com/</Audience_Claim_Values>
+		<Expiration_Claim_Mandatory>TRUE</Expiration_Claim_Mandatory>
+		<Not_Before_Claim_Mandatory>TRUE</Not_Before_Claim_Mandatory>
+		<Validate_Custom_Claim>TRUE</Validate_Custom_Claim>
+		<Mandatory_Custom_Claim_Validations>custom_key == esb-testing; admin in dauthjan, dipanjan; sub != ace_testing@clients</Mandatory_Custom_Claim_Validations>
+		<Advance_Apply_configuration_to_all_API_method_and_resources>FALSE</Advance_Apply_configuration_to_all_API_method_and_resources>
+		<Advance_Apply_configuration_to_specific_API_method_and_resources>POST /myjwtvalidator; PUT /myjwtvalidator*; PATCH /myjwtvalidator</Advance_Apply_configuration_to_specific_API_method_and_resources>
+	</policy>
+</policies>

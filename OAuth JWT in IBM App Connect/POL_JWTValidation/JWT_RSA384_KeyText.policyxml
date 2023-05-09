@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies>
+	<policy policyName="JWT_RSA384_KeyText" policyType="UserDefined" policyTemplate="UserDefined">
+		<JWT_location_in_API_requests>HTTPInputHeader/Authorization</JWT_location_in_API_requests>
+		<JWT_Signing_Method>RSA</JWT_Signing_Method>
+		<JWT_Key_origin>KEY</JWT_Key_origin>
+		<JWKS_URL_or_Key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzsmwcl49KF00TMx3mDGlSK6q27tsqEYAfGw8YuIaLMSKb2PUSjb1AH74Tcx+17h0GP76jCfu/w0Zyt+YTllm3OYRJ5Qf7ulS2Fk8ynRG7OxiWfrOQsdFSXYqP5UXBDdo6zchKxpQhqGX5bL9a2LV7wDUDA3SeI0UMJcWFlAv2zHQ5UeNCACDzPlKWwpiK/KF5HQ/oTPs+mO5pJT2DL40z4xSDY8Gy9ouMM3bQBeRvpWrtFp9Rf1Hmht01rAG8q6gPJs+iXb6xp4bTYgJl75pkkdscL6LUhVulSC6c/3kwUpb1iiWnqe/098yiKoxC2CoHkEOT5NfExS+KwUZHTzU6QIDAQAB</JWKS_URL_or_Key>
+		<Skip_Client_Id_Validation>FALSE</Skip_Client_Id_Validation>
+		<Client_ID_Expression>client_id in esb_testing</Client_ID_Expression>
+		<Validate_Audience_Claim>TRUE</Validate_Audience_Claim>
+		<Audience_Claim_Mandatory>TRUE</Audience_Claim_Mandatory>
+		<Audience_Claim_Values>http://esbtesting.com/</Audience_Claim_Values>
+		<Expiration_Claim_Mandatory>TRUE</Expiration_Claim_Mandatory>
+		<Not_Before_Claim_Mandatory>TRUE</Not_Before_Claim_Mandatory>
+		<Validate_Custom_Claim>TRUE</Validate_Custom_Claim>
+		<Mandatory_Custom_Claim_Validations>custom_key == esb-testing; admin == dauthjan</Mandatory_Custom_Claim_Validations>
+		<Advance_Apply_configuration_to_all_API_method_and_resources>TRUE</Advance_Apply_configuration_to_all_API_method_and_resources>
+		<Advance_Apply_configuration_to_specific_API_method_and_resources></Advance_Apply_configuration_to_specific_API_method_and_resources>
+	</policy>
+</policies>

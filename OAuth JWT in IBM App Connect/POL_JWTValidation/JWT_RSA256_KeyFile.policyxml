@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies>
+	<policy policyName="JWT_RSA256_KeyFile" policyType="UserDefined" policyTemplate="UserDefined">
+		<JWT_location_in_API_requests>HTTPInputHeader/Authorization</JWT_location_in_API_requests>
+		<JWT_Signing_Method>RSA</JWT_Signing_Method>
+		<JWT_Key_origin>KEY</JWT_Key_origin>
+		<JWKS_URL_or_Key>file://C:\Users\Admin\IBM\ACET12\zero-to-hero\JWT_Implementation\JWT_Implementation_RSA256_PublicKey.pem</JWKS_URL_or_Key>
+		<Skip_Client_Id_Validation>FALSE</Skip_Client_Id_Validation>
+		<Client_ID_Expression>client_id in esb_testing</Client_ID_Expression>
+		<Validate_Audience_Claim>TRUE</Validate_Audience_Claim>
+		<Audience_Claim_Mandatory>TRUE</Audience_Claim_Mandatory>
+		<Audience_Claim_Values>http://esbtesting.com/</Audience_Claim_Values>
+		<Expiration_Claim_Mandatory>TRUE</Expiration_Claim_Mandatory>
+		<Not_Before_Claim_Mandatory>TRUE</Not_Before_Claim_Mandatory>
+		<Validate_Custom_Claim>TRUE</Validate_Custom_Claim>
+		<Mandatory_Custom_Claim_Validations>iss in http://ibmace.aceisd10.com/; custom_key in ace-testing, mule-testing, esb-testing; admin notin dipanjan, anonymous; sub != ace_testing@clients; jti &gt; 4681; jti &lt; 4683; jti &gt;= 4682; jti &lt;= 4682</Mandatory_Custom_Claim_Validations>
+		<Advance_Apply_configuration_to_all_API_method_and_resources>TRUE</Advance_Apply_configuration_to_all_API_method_and_resources>
+		<Advance_Apply_configuration_to_specific_API_method_and_resources></Advance_Apply_configuration_to_specific_API_method_and_resources>
+	</policy>
+</policies>

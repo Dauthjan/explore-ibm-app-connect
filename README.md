@@ -18,3 +18,7 @@ The intent of these samples is to demonstrate some of the features of IBM App Co
 * [Secured YAML or Properties Config Support](https://github.com/Dauthjan/explore-ibm-app-connect/tree/main/Secured%20YAML%20or%20Properties%20Config%20Support)
 > Implementation of configuring applications using config YAML or Properties which can change the behavior of application dynamically without redeploying. </br>
 > This implementation supports (AES) sercured properties similar to [Secure Configuration in MuleSoft](https://docs.mulesoft.com/mule-runtime/4.4/secure-configuration-properties#define-secure-configuration-properties-in-the-file). The implementation also supports [Encrypt All the Content of a File](https://docs.mulesoft.com/mule-runtime/4.4/secure-configuration-properties#encrypt-all-the-content-of-a-file) similar to MuleSoft. Used IBM App Connect Enterprise 12.0.6.0 on Windows 11.
+
+* [OAuth JWT in IBM App Connect](https://github.com/Dauthjan/explore-ibm-app-connect/tree/main/OAuth%20JWT%20in%20IBM%20App%20Connect)
+> Experimental implementation of JWT validation on IBM App Connect Enterprise using User Defined Policy. </br>
+> This implementation is an attempt to create a JWT Policy similar to  [JWT Validation Policy in MuleSoft](https://docs.mulesoft.com/gateway/1.4/policies-included-jwt-validation). The implementation only brings support of JWS (Signed JWT) and not JWE (Encrypted JWT). Used IBM App Connect Enterprise 12.0.8.0 on Windows 11.

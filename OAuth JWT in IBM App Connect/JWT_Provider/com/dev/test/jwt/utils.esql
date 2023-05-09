@@ -1,0 +1,31 @@
+BROKER SCHEMA com.dev.test.jwt
+
+CREATE FUNCTION getNoneToken()
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.None.getNoneToken";
+
+CREATE FUNCTION getRSAToken(IN isCreateNew BOOLEAN, IN keySize CHAR, IN CertificatePath CHAR, IN PrivateKeyPath CHAR, IN PublicKeyPath CHAR, IN JWKSPath CHAR)
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.RSA.getRSAToken";
+
+CREATE FUNCTION  getPSToken(IN isCreateNew BOOLEAN, IN keySize CHAR, IN CertificatePath CHAR, IN PrivateKeyPath CHAR, IN PublicKeyPath CHAR, IN JWKSPath CHAR)
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.PS.getPSToken";
+
+CREATE FUNCTION getESToken(IN isCreateNew BOOLEAN, IN keySize CHAR, IN CertificatePath CHAR, IN PrivateKeyPath CHAR, IN PublicKeyPath CHAR, IN JWKSPath CHAR)
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.ECDSA.getESToken";
+
+CREATE FUNCTION getEDToken(IN isCreateNew BOOLEAN, IN PrivateKeyPath CHAR, IN PublicKeyPath CHAR, IN JWKSPath CHAR)
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.Ed25519.getEDToken";
+
+CREATE FUNCTION getHMACToken(IN isCreateNew BOOLEAN, IN keySize CHAR, IN SecretKeyPath CHAR)
+RETURNS BLOB
+LANGUAGE JAVA 
+EXTERNAL NAME "com.dev.jwt.HMAC.getHMACToken";
